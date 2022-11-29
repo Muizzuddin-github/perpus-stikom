@@ -1,0 +1,25 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.33rem;
+  width: 8rem;
+  height: fit-content;
+  border-radius: 0.33rem;
+  box-shadow: 0px 0px 4px;
+
+  img {
+    margin: 0.33rem;
+    height: 8rem;
+    border-radius: 0.33rem;
+  }
+
+  .card__title {
+    color: #0060ae;
+    margin-top: 0.33rem;
+    margin-bottom: 0.33rem;
+  }
+
+  .card__text {
+    font-size: 0.67rem;
+  }
+}
