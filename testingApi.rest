@@ -1,0 +1,11 @@
+GET  http://127.0.0.1:3000/api/mahasiswa
+
+### login
+
+POST http://127.0.0.1:3000/api/login
+Content-Type: application/json
+
+{
+    "username" : "1121101980",
+    "password" : "1121101980"
+}
