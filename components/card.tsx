@@ -1,17 +1,24 @@
-import card from "./card.module.scss";
+import card from './scss/card.module.scss'
+import Image from 'next/image'
+import Link from 'next/link'
 
-export default function (props: {
+interface DataDetil {
   image: string,
   title: string,
   author: string,
-  pageCount: string,
-}) {
+  pageCount: string
+  id: string
+}
+
+export default function (props: DataDetil) {
   return (
-    <div className={card.card}>
-      <img src={props.image} />
-      <div className={card.card__title}>{props.title}</div>
-      <div className={card.card__text}>{props.author}</div>
-      <div className={card.card__text}>{props.pageCount} Halaman</div>
-    </div>
+    <li className={card.card}>
+      <figure>
+        <Link href={`/book/${props.id}`}> <Image src={props.image} width={140} height={180} alt={props.title} /></Link>
+      </figure>
+      <p>{props.title}</p>
+      <p>{props.author || 'unknown'}</p>
+      <p>{props.pageCount} Halaman</p>
+    </li>
   )
 }

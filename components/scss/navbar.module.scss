@@ -1,0 +1,62 @@
+.navbar{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 80px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+
+    h1{
+        color: #413b89;
+        font-size: 1.875rem;
+    }
+
+    form{
+        display: flex;
+        width: 40%;
+
+        input{
+            padding: 10px;
+            border-top-left-radius: 0.313rem;
+            border-bottom-left-radius: 0.313rem;
+            outline: none;
+            width: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        input::placeholder{
+            color: #9da5a8;
+        }
+
+        select{
+            outline: none;
+            border: none;
+        }
+
+        button{
+            outline: none;
+            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            border-top-right-radius: 0.313rem;
+            border-bottom-right-radius: 0.313rem;
+            font-size: 1.25rem;
+        }
+    }
+
+    button[type='button']{
+        outline: none;
+        border: none;
+        border-radius: 0.375rem;
+        padding: 0.313rem 0.625rem;
+        background-color:  #413b89;
+        color: white;
+    }
+}
+

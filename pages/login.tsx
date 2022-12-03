@@ -25,7 +25,6 @@ export default function Login() {
   }
   return (
     <>
-      <Navbar />
       <main>
         <form onSubmit={submit}  style={{ width: 'fit-content', margin: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.67rem' }}>
           <span className="material-icons" style={{ fontSize: '6rem' }}>
