@@ -11,9 +11,15 @@ Content-Type: application/json
 }
 
 
-### 
+### buku
 GET http://127.0.0.1:3000/api/buku
 ###
 GET http://127.0.0.1:3000/api/buku/terbaru
 ###
 GET http://127.0.0.1:3000/api/buku/terkenal
+###
+GET http://127.0.0.1:3000/api/buku/1111111111111111111111
+
+
+### cari
+GET http://127.0.0.1:3000/api/buku/cari?judul=javascript
