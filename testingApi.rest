@@ -9,3 +9,11 @@ Content-Type: application/json
     "username" : "1121101980",
     "password" : "1121101980"
 }
+
+
+### 
+GET http://127.0.0.1:3000/api/buku
+###
+GET http://127.0.0.1:3000/api/buku/terbaru
+###
+GET http://127.0.0.1:3000/api/buku/terkenal
