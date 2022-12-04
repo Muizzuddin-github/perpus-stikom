@@ -18,5 +18,5 @@ const sqlite3Connect: Client = {
     useNullAsDefault: true
 }
 
-const mysql = knex(sqlite3Connect);
-export default mysql;
+const sqlite3 = knex(sqlite3Connect);
+export default sqlite3;

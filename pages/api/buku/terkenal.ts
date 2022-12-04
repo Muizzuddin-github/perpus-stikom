@@ -1,5 +1,5 @@
 import { NextApiRequest,NextApiResponse } from "next";
-import mysql from "../../../model/mysql";
+import mysql from "../../../model/sqlite3";
 
 
 type Data = {

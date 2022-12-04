@@ -1,6 +1,6 @@
 import { NextApiRequest,NextApiResponse } from "next";
 import jwt from 'jsonwebtoken'
-import mysql from "../../model/mysql";
+import mysql from "../../model/sqlite3";
 import {serialize} from 'cookie'
 
 interface Option {

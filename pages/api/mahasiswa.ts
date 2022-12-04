@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mysql from '../../model/mysql'
+import mysql from '../../model/sqlite3'
 
 interface Mahasiswa {
   id_mahasiswa: string,
