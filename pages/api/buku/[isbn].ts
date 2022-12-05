@@ -23,8 +23,8 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
 
 
     try{
-        const bookDetails = await sqlite3('buku').join('deskripsi','buku.isbn','deskripsi.isbn').where('buku.kode_buku',req.query.id).select('buku.kode_buku','buku.nomor_rak','deskripsi.judul_buku','deskripsi.gambar_buku','deskripsi.deskripsi','deskripsi.pengarang','deskripsi.penerbit','deskripsi.isbn')
-
+        const bookDetails = await sqlite3('deskripsi').where('isbn',req.query.isbn)
+        
         if(!bookDetails.length) return res.status(404).json({status: "not found",data: []})
         return res.status(200).json({status: "success",data: bookDetails})
 

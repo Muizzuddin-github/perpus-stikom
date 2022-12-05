@@ -17,9 +17,15 @@ GET http://127.0.0.1:3000/api/buku
 GET http://127.0.0.1:3000/api/buku/terbaru
 ###
 GET http://127.0.0.1:3000/api/buku/terkenal
-###
-GET http://127.0.0.1:3000/api/buku/1111111111111111111111
 
+
+
+### detil
+GET http://127.0.0.1:3000/api/buku/9786020422411
+
+
+### stok sebuah buku
+GET http://127.0.0.1:3000/api/buku/stok/9786020496894
 
 ### cari
-GET http://127.0.0.1:3000/api/buku/cari?judul=javascript
+GET http://127.0.0.1:3000/api/buku/cari?judul=python

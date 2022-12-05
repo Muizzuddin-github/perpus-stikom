@@ -3,9 +3,9 @@ import sqlite3 from "../../../model/sqlite3";
 
 
 interface Search {
-    kode_buku: string
-    judul_buku: string
-    gambar_buku: string
+    isbn: string,
+    judul_buku: string,
+    gambar_buku: string,
     pengarang: string
 }
 
@@ -22,9 +22,9 @@ export default async function(req: NextApiRequest, res: NextApiResponse<Data>){
         let data: Array<Search> = []
         if(req.query.judul){
             const judul: string = req.query.judul[0].toUpperCase() + req.query.judul.slice(1)
-            data = await sqlite3('buku').join('deskripsi','buku.isbn','deskripsi.isbn').where('deskripsi.judul_buku',judul).select('buku.kode_buku','buku.nomor_rak','deskripsi.judul_buku','deskripsi.gambar_buku','deskripsi.deskripsi','deskripsi.pengarang','deskripsi.penerbit','deskripsi.isbn')
+            data = await sqlite3('deskripsi').where('judul_buku',judul).select('isbn','judul_buku','gambar_buku','pengarang').limit(12)
         }else if(req.query.isbn){
-            data = await sqlite3('buku').join('deskripsi','buku.isbn','deskripsi.isbn').where('deskripsi.isbn',req.query.isbn).select('buku.kode_buku','buku.nomor_rak','deskripsi.judul_buku','deskripsi.gambar_buku','deskripsi.deskripsi','deskripsi.pengarang','deskripsi.penerbit','deskripsi.isbn')
+            data = await sqlite3('deskripsi').where('isbn',req.query.isbn).select('isbn','judul_buku','gambar_buku','pengarang').limit(12)
         }
 
         if(!data.length) return res.status(404).json({status: "not found",data: []})
