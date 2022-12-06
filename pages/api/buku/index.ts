@@ -17,7 +17,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     if(req.method !== 'GET') return res.status(405).json({status: "method not allowed", data: []})
 
     try{
-        const books = await mysql('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang').limit(12)
+        const start = req.query.start || 0
+        const limit = req.query.limit || 0
+
+        const books = await mysql('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang').limit(+limit).offset(+start)
+
         return res.status(200).json({status: "success", data: books})
 
     }catch(err: any){

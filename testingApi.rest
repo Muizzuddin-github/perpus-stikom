@@ -11,8 +11,8 @@ Content-Type: application/json
 }
 
 
-### buku
-GET http://127.0.0.1:3000/api/buku
+### bukus
+GET http://127.0.0.1:3000/api/buku?start=0&limit=6
 ###
 GET http://127.0.0.1:3000/api/buku/terbaru
 ###
