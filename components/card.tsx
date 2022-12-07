@@ -3,22 +3,22 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 interface DataDetil {
-  image: string,
-  title: string,
-  author: string,
-  pageCount: string
-  id: string
+  judul_buku: string,
+  gambar_buku: string,
+  pengarang: string,
+  jumlah_halaman: number
+  isbn: string
 }
 
 export default function (props: DataDetil) {
   return (
     <li className={card.card}>
       <figure>
-        <Link href={`/book/${props.id}`}> <Image src={props.image} width={140} height={180} alt={props.title} /></Link>
+        <Link href={`/book/${props.isbn}`}> <Image src={props.gambar_buku} width={140} height={180} alt={props.judul_buku} priority /></Link>
       </figure>
-      <p>{props.title}</p>
-      <p>{props.author || 'unknown'}</p>
-      <p>{props.pageCount} Halaman</p>
+      <p>{props.judul_buku}</p>
+      <p>{props.pengarang || 'unknown'}</p>
+      <p>{props.jumlah_halaman} Halaman</p>
     </li>
   )
 }

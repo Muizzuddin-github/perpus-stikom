@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mysql from '../../../model/sqlite3'
+import sqlite3 from '../../../model/sqlite3'
 
 interface Buku {
     isbn: string,
@@ -20,7 +20,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         const start = req.query.start || 0
         const limit = req.query.limit || 0
 
-        const books = await mysql('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang').limit(+limit).offset(+start)
+        const books = await sqlite3('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang','jumlah_halaman').limit(+limit).offset(+start)
 
         return res.status(200).json({status: "success", data: books})
 

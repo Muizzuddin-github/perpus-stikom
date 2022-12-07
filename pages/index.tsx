@@ -1,4 +1,4 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
 
 import Card from "../components/card";
@@ -7,23 +7,20 @@ import Header from '../components/header'
 import home from '../styles/Home.module.css'
 import { useState } from "react";
 
-export const getStaticProps: GetStaticProps =
-  async function (context) {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${'lego'}&maxResults=${6}`)
-    const data = await res.json()
-
-    const daftarBuku = await (await fetch(`https://www.googleapis.com/books/v1/volumes?q=${'lego'}&maxResults=${20}`)).json()
+export const getServerSideProps: GetServerSideProps =
+  async function (context){
+    const {data: terbaru} = await (await fetch('http://127.0.0.1:3000/api/buku/terbaru')).json()
+    const {data: terkenal} = await (await fetch('http://127.0.0.1:3000/api/buku/terkenal')).json()
+    const {data: daftarBuku} = await (await fetch('http://127.0.0.1:3000/api/buku?start=0&limit=6')).json()
 
     return {
-      props: {
-        data: [data,daftarBuku]
-      }
+      props: { terbaru, terkenal, daftarBuku}
     }
   }
 
 export default function Home(props: any) {
 
-  const [bookList, setBookList] = useState(props.data[1].items)
+  const [bookList, setBookList] = useState(props.daftarBuku)
 
 
   return (
@@ -37,15 +34,15 @@ export default function Home(props: any) {
         <section className={home.buku}>
           <h2>Buku Terbaru</h2>
           <ul>
-            {props.data[0].items.map(function (v: any, i: number) {
+            {props.terbaru.map(function (buku: any, i: number) {
               try {
                 return (<Card
-                    author={v.volumeInfo.authors}
-                    image={v.volumeInfo.imageLinks.thumbnail}
-                    pageCount={v.volumeInfo.pageCount}
-                    title={v.volumeInfo.title}
-                    key={v.id}
-                    id={v.id}
+                judul_buku={buku.judul_buku}
+                gambar_buku={buku.gambar_buku}
+                pengarang={buku.pengarang}
+                jumlah_halaman={buku.jumlah_halaman}
+                isbn={buku.isbn}
+                key={i}
                   />
                 )
               }
@@ -59,17 +56,16 @@ export default function Home(props: any) {
         <section className={home.buku}>
           <h2> Paling Sering Dipinjam</h2>
           <ul>
-            {props.data[0].items.map(function (v: any, i: number) {
-              return (
-                <Card
-                  author={v.volumeInfo.authors}
-                  image={'/vercel.svg'}
-                  pageCount={v.volumeInfo.pageCount}
-                  title={v.volumeInfo.title}
-                  key={v.id}
-                  id={v.id}
-                />
-              )
+            {props.terkenal.map(function (buku: any, i: number) {
+              return (<Card
+                judul_buku={buku.judul_buku}
+                gambar_buku={buku.gambar_buku}
+                pengarang={buku.pengarang}
+                jumlah_halaman={buku.jumlah_halaman}
+                isbn={buku.isbn}
+                key={i}
+                  />
+                )
             })}
           </ul>
         </section>
@@ -77,15 +73,15 @@ export default function Home(props: any) {
         <section className={home['book-list']} id='book-list'>
           <h2> Daftar Buku</h2>
           <ul>
-            {bookList.length ? bookList.map(function (v: any, i: number) {
+            {bookList.length ? bookList.map(function (buku: any, i: number) {
               return (
                 <Card
-                  author={v.volumeInfo.authors}
-                  image={v.volumeInfo.imageLinks?.thumbnail || '/vercel.svg'}
-                  pageCount={v.volumeInfo.pageCount}
-                  title={v.volumeInfo.title}
-                  key={v.id}
-                  id={v.id}
+                judul_buku={buku.judul_buku}
+                gambar_buku={buku.gambar_buku}
+                pengarang={buku.pengarang}
+                jumlah_halaman={buku.jumlah_halaman}
+                isbn={buku.isbn}
+                key={i}
                 />
               )
             }) : <section className={home['not-found']}>Pencarian tidak ditemukan</section>}

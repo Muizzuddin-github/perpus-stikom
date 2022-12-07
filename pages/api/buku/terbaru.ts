@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mysql from '../../../model/sqlite3'
+import sqlite3 from '../../../model/sqlite3'
 
 interface Buku {
     isbn: string,
@@ -17,7 +17,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     if(req.method !== 'GET') return res.status(405).json({status: "method not allowed", data: []})
 
     try{
-        const newBooks = await mysql('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang').orderBy('created_at','desc').limit(6)
+        const newBooks = await sqlite3('deskripsi').select('isbn','judul_buku','gambar_buku','pengarang').orderBy('created_at','desc').limit(6)
         return res.status(200).json({status: "success", data: newBooks})
 
     }catch(err: any){
