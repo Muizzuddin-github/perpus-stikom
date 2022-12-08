@@ -30,9 +30,7 @@ export default Book;
 
 export const getServerSideProps: GetServerSideProps = async function(context){
     const isbn = context.params?.isbn
-    const url = context.req.headers.referer || ''
-    const domainName = new URL(url)
-    const {data} = await(await fetch(`${domainName.origin}/api/buku/${isbn}`)).json()
+    const {data} = await(await fetch(`http://localhost:3000/api/buku/${isbn}`)).json()
     return {
         props: {detilBuku: data[0]}
     }
