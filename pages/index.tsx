@@ -9,9 +9,11 @@ import { useState } from "react";
 
 export const getServerSideProps: GetServerSideProps =
   async function (context){
-    const {data: terbaru} = await (await fetch('http://127.0.0.1:3000/api/buku/terbaru')).json()
-    const {data: terkenal} = await (await fetch('http://127.0.0.1:3000/api/buku/terkenal')).json()
-    const {data: daftarBuku} = await (await fetch('http://127.0.0.1:3000/api/buku?start=0&limit=6')).json()
+    const url = context.req.headers.referer || ''
+    const domainName = new URL(url)
+    const {data: terbaru} = await (await fetch(`${domainName.origin}/api/buku/terbaru`)).json()
+    const {data: terkenal} = await (await fetch(`${domainName.origin}/api/buku/terkenal`)).json()
+    const {data: daftarBuku} = await (await fetch(`${domainName.origin}/api/buku?start=0&limit=6`)).json()
 
     return {
       props: { terbaru, terkenal, daftarBuku}
