@@ -17,15 +17,16 @@ GET http://127.0.0.1:3000/api/buku?start=0&limit=6
 GET http://127.0.0.1:3000/api/buku/terbaru
 ###
 GET http://127.0.0.1:3000/api/buku/terkenal
-
+###
+GET http://127.0.0.1:3000/api/buku/pinjam/9786232440074
 
 
 ### detil
-GET http://127.0.0.1:3000/api/buku/9786020422411
+GET http://127.0.0.1:3000/api/buku/9786232440074
 
 
 ### stok sebuah buku
-GET http://127.0.0.1:3000/api/buku/stok/9786020496894
+GET http://127.0.0.1:3000/api/buku/stok/9786232440074
 
 ### cari
 GET http://127.0.0.1:3000/api/buku/cari?judul=python
