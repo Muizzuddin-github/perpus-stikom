@@ -23,14 +23,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     try{
         if(req.query.status === 'proses'){
             const pinjaman = await sqlite3('peminjaman_buku').join('buku','peminjaman_buku.kode_buku','buku.kode_buku').join('deskripsi','deskripsi.isbn','buku.isbn').select('deskripsi.isbn','deskripsi.judul_buku','deskripsi.gambar_buku','deskripsi.penerbit','deskripsi.pengarang','deskripsi.jumlah_halaman','peminjaman_buku.tanggal_peminjaman','peminjaman_buku.tanggal_pengembalian').where({'peminjaman_buku.status_peminjaman': false,'peminjaman_buku.nim_mahasiswa': '1121101710'})
-
-            if(!pinjaman.length) return res.status(404).json({status: 'anda belum pernah meminjam',data: []})
             
             return res.status(200).json({status: "success", data: pinjaman})
         }else if(req.query.status === 'selesai'){
             const pinjaman = await sqlite3('peminjaman_buku').join('buku','peminjaman_buku.kode_buku','buku.kode_buku').join('deskripsi','deskripsi.isbn','buku.isbn').select('deskripsi.isbn','deskripsi.judul_buku','deskripsi.gambar_buku','deskripsi.penerbit','deskripsi.pengarang','deskripsi.jumlah_halaman','peminjaman_buku.tanggal_peminjaman','peminjaman_buku.tanggal_pengembalian').where({'peminjaman_buku.status_peminjaman': true,'peminjaman_buku.nim_mahasiswa': '1121101710'}).limit(10)
-
-            if(!pinjaman.length) return res.status(404).json({status: 'anda belum pernah meminjam',data: []})
             
             return res.status(200).json({status: "success", data: pinjaman})
         }else{

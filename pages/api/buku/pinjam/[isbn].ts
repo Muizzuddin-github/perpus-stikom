@@ -23,7 +23,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
         await sqlite3('peminjaman_buku').insert({nim_mahasiswa: '1121101710',kode_buku: getRandomBook.kode_buku,tanggal_pengembalian: new Date().toISOString()})
 
-        return res.status(200).json({status: "success", data: [getRandomBook]})
+        return res.status(201).json({status: "success", data: [getRandomBook]})
 
 
     }catch(err: any){
