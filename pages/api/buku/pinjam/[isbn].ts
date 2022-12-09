@@ -18,6 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     try{
         const getRandomBook = await sqlite3('buku').where({isbn: req.query.isbn, status_dipinjam: false}).select('kode_buku','isbn').first()
 
+        if(!getRandomBook){
+            return res.status(404).json({status: "Maaf stok buku sudah habis",data: []})
+        }
+
         // // update status dipinjam
         await sqlite3('buku').update({status_dipinjam: true}).where('kode_buku',getRandomBook.kode_buku)
 
