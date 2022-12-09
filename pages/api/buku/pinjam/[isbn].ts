@@ -16,9 +16,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         // // update status dipinjam
         await sqlite3('buku').update({status_dipinjam: true}).where('kode_buku',getRandomBook.kode_buku)
 
-        const bukuDipinjam = await sqlite3('peminjaman_buku').insert({nim_mahasiswa: '1121101710',kode_buku: getRandomBook.kode_buku,tanggal_pengembalian: new Date()})
+        await sqlite3('peminjaman_buku').insert({nim_mahasiswa: '1121101710',kode_buku: getRandomBook.kode_buku,tanggal_pengembalian: new Date()})
 
-        return res.status(200).json({status: "success", data: bukuDipinjam})
+        return res.status(200).json({status: "success", data: getRandomBook})
 
 
     }catch(err: any){
