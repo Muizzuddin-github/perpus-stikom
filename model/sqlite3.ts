@@ -1,22 +1,21 @@
-import knex from "knex"
+import { open } from "sqlite"
+import sqlite3 from "sqlite3"
 
-interface Connector {
-    filename: string
-}
+
 
 interface Client {
-    client: string,
-    connection: Connector,
-    useNullAsDefault: boolean
+    filename: string,
+    driver: any
 }
 
 const sqlite3Connect: Client = {
-    client: 'sqlite3',
-    connection: {
-      filename: "./perpustakaan"
-    },
-    useNullAsDefault: true
+    filename: "./perpustakaan",
+    driver: sqlite3.cached.Database
 }
 
-const sqlite3 = knex(sqlite3Connect);
-export default sqlite3;
+
+const sqlite3Conn = async function(){
+    return await open(sqlite3Connect)
+}
+
+export default sqlite3Conn

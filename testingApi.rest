@@ -11,27 +11,56 @@ Content-Type: application/json
 }
 
 
-### bukus
+### buku
 GET http://127.0.0.1:3000/api/buku?start=0&limit=20
 ###
 GET http://127.0.0.1:3000/api/buku/terbaru
-###
+### terkenal
 GET http://127.0.0.1:3000/api/buku/terkenal
 ###
-GET http://127.0.0.1:3000/api/buku/pinjam/9786023749928
-
+GET http://127.0.0.1:3000/api/buku/dipinjam?start=0&limit=10
 
 ### detil
-GET http://127.0.0.1:3000/api/buku/9786023749928
+GET http://127.0.0.1:3000/api/buku/9789792965629
 
 
-### stok sebuah buku
-GET http://127.0.0.1:3000/api/buku/stok/9786023749928
+DELETE http://127.0.0.1:3000/api/buku/9789792965629
+### 
+POST http://127.0.0.1:3000/api/buku
+Content-Type: application/json
 
-### cari
-GET http://127.0.0.1:3000/api/buku/cari?judul=python
+{
+    "isbn" : "9789792965629",
+    "judul_buku" : "Java",
+    "gambar_buku" : "https://iili.io/HCvr8KB.md.jpg",
+    "penerbit" : "Andi Offset",
+    "jumlah_halaman" : 386,
+    "deskripsi" : "Java, Referensi Lengkap Untuk Programer",
+    "nomor_rak" : 1,
+    "pengarang" : "Andi Offset",
+    "stok_buku" : 8,
+    "stok_tersedia" : 8,
+    "id_kategori" : 1
+}
 
-### lihat daftar buku yang dipinjam
-## dalam proses peminjaman = proses
-## selesai proses peminjaman = selesai
-GET http://127.0.0.1:3000/api/buku/pinjaman/proses
+### 
+PUT  http://127.0.0.1:3000/api/buku/9789792965629
+Content-Type: application/json
+
+{
+    "judul_buku" : "Java",
+    "gambar_buku" : "https://iili.io/HCvr8KB.md.jpg",
+    "penerbit" : "Andi Offset",
+    "jumlah_halaman" : 386,
+    "deskripsi" : "Java, Referensi Lengkap Untuk Programer",
+    "nomor_rak" : 1,
+    "pengarang" : "Andi Offset",
+    "stok_buku" : 12,
+    "stok_tersedia" : 12,
+    "id_kategori" : 1
+}
+
+
+### pinjam buku
+
+GET http://127.0.0.1:3000/api/buku/pinjam/9789792965629
