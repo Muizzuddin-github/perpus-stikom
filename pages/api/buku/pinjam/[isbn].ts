@@ -57,7 +57,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
 
         await db.run('insert into peminjaman_buku (nim_mahasiswa,isbn,tanggal_pengembalian) values (?,?,?)',['1121101710',checkBuku.isbn,`${tanggal} ${waktu}`])
 
-
+        checkBuku.stok_tersedia--
         return res.status(200).json({
             status: "success",
             message: "berhasil meminjam",

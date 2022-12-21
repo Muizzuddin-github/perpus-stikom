@@ -13,19 +13,16 @@ Content-Type: application/json
 
 ### buku
 GET http://127.0.0.1:3000/api/buku?start=0&limit=20
-###
+### terbaru
 GET http://127.0.0.1:3000/api/buku/terbaru
 ### terkenal
 GET http://127.0.0.1:3000/api/buku/terkenal
-###
-GET http://127.0.0.1:3000/api/buku/dipinjam?start=0&limit=10
-
 ### detil
-GET http://127.0.0.1:3000/api/buku/9789792965629
+GET http://127.0.0.1:3000/api/buku/9789794336052
 
-
+## hapus buku
 DELETE http://127.0.0.1:3000/api/buku/9789792965629
-### 
+### tambah buku
 POST http://127.0.0.1:3000/api/buku
 Content-Type: application/json
 
@@ -43,7 +40,7 @@ Content-Type: application/json
     "id_kategori" : 1
 }
 
-### 
+### ubah buku
 PUT  http://127.0.0.1:3000/api/buku/9789792965629
 Content-Type: application/json
 
@@ -62,5 +59,11 @@ Content-Type: application/json
 
 
 ### pinjam buku
+GET http://127.0.0.1:3000/api/buku/pinjam/9789794336052
+### buku sedang dipinjam
+GET http://127.0.0.1:3000/api/buku/dipinjam?start=0&limit=10
+### riwayat peminjaman buku yang sudah selesai
+GET http://127.0.0.1:3000/api/buku/riwayat-peminjaman?start=0&limit=10
 
-GET http://127.0.0.1:3000/api/buku/pinjam/9789792965629
+### selesaikan peminjaman buku
+GET http://127.0.0.1:3000/api/buku/pengembalian?nim=1121101710&isbn=9789794336052
