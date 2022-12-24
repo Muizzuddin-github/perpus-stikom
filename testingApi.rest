@@ -12,7 +12,7 @@ Content-Type: application/json
 
 
 ### buku
-GET http://127.0.0.1:3000/api/buku?start=0&limit=20
+GET http://127.0.0.1:3000/api/buku?start=0&limit=40
 ### terbaru
 GET http://127.0.0.1:3000/api/buku/terbaru
 ### terkenal
@@ -20,42 +20,32 @@ GET http://127.0.0.1:3000/api/buku/terkenal
 ### detil
 GET http://127.0.0.1:3000/api/buku/9789794336052
 
-## hapus buku
-DELETE http://127.0.0.1:3000/api/buku/9789792965629
+### hapus buku
+DELETE http://127.0.0.1:3000/api/buku/9789794336052
 ### tambah buku
 POST http://127.0.0.1:3000/api/buku
-Content-Type: application/json
-
-{
-    "isbn" : "9789792965629",
-    "judul_buku" : "Java",
-    "gambar_buku" : "https://iili.io/HCvr8KB.md.jpg",
-    "penerbit" : "Andi Offset",
-    "jumlah_halaman" : 386,
-    "deskripsi" : "Java, Referensi Lengkap Untuk Programer",
-    "nomor_rak" : 1,
-    "pengarang" : "Andi Offset",
-    "stok_buku" : 8,
-    "stok_tersedia" : 8,
-    "id_kategori" : 1
-}
 
 ### ubah buku
-PUT  http://127.0.0.1:3000/api/buku/9789792965629
+PUT  http://127.0.0.1:3000/api/buku/9789794336052
 Content-Type: application/json
 
 {
-    "judul_buku" : "Java",
-    "gambar_buku" : "https://iili.io/HCvr8KB.md.jpg",
-    "penerbit" : "Andi Offset",
-    "jumlah_halaman" : 386,
-    "deskripsi" : "Java, Referensi Lengkap Untuk Programer",
-    "nomor_rak" : 1,
-    "pengarang" : "Andi Offset",
-    "stok_buku" : 12,
-    "stok_tersedia" : 12,
-    "id_kategori" : 1
+    
+    "isbn": "9789794336052",
+    "judul_buku": "Bj Habibie2",
+    "penerbit": "Mizan",
+    "jumlah_halaman": 360,
+    "deskripsi": "Buku ini merangkai jejak pemikiran B.J. Habibie selama menjabat sebagai Menteri Riset dan Teknologi sejak tahun 1978 hingga Maret 1998",
+    "nomor_rak": 2,
+    "pengarang": "Mizan",
+    "stok_buku": 10,
+    "id_kategori": 2
+    
 }
+
+
+### kategori
+GET http://127.0.0.1:3000/api/buku/kategori
 
 
 ### pinjam buku
