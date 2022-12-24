@@ -59,6 +59,18 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             return res.status(200).json({status : 'success',message: "buku berhasil dihapus",data: checkBuku})
         }else if(req.method === 'PUT'){
 
+            const checkNewIsbn = await db.all(`select * from buku where isbn = ${req.body.isbn}`)
+
+            if(checkNewIsbn.length){
+                if(checkNewIsbn[0].isbn !== checkBuku[0].isbn){
+                    return res.status(400).json({
+                        status: "bad request",
+                        message: "isbn yang anda ubah sudah ada atau duplikat",
+                        data: []
+                    })
+                }
+            }
+
             // ada yang pinjam buku ini ga
             if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
 
