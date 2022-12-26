@@ -3,14 +3,16 @@ import sqlite3Conn from "../../../model/sqlite3";
 import fs from 'fs'
 
 interface Detil {
-    kode_buku: string
-    nomor_rak: number
+    isbn: string
     judul_buku: string
+    nomor_rak: number
     gambar_buku: string
     deskripsi: string
+    jumlah_halaman: number
     pengarang: string
+    stok_buku: number
+    stok_tersedia: number
     penerbit: string
-    isbn: string
 }
 
 
