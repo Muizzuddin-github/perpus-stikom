@@ -19,7 +19,7 @@ export default async (req: NextApiRequest,res: NextApiResponse<Data>) => {
 
     try{
         
-    const telat = await (await sqlite3Conn()).all("SELECT * FROM peminjaman_buku WHERE DATETIME('now') > tanggal_pengembalian and status_peminjaman = true")
+    const telat = await (await sqlite3Conn()).all("SELECT * FROM peminjaman_buku WHERE tanggal_pengembalian < DATETIME('now')  and status_peminjaman = true")
 
     return res.status(200).json({
         status: "success",
