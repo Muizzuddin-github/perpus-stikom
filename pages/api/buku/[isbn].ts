@@ -61,18 +61,6 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             return res.status(200).json({status : 'success',message: "buku berhasil dihapus",data: checkBuku})
         }else if(req.method === 'PUT'){
 
-            const checkNewIsbn = await db.all(`select * from buku where isbn = ${req.body.isbn}`)
-
-            if(checkNewIsbn.length){
-                if(checkNewIsbn[0].isbn !== checkBuku[0].isbn){
-                    return res.status(400).json({
-                        status: "bad request",
-                        message: "isbn yang anda ubah sudah ada atau duplikat",
-                        data: []
-                    })
-                }
-            }
-
             // ada yang pinjam buku ini ga
             if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
 
@@ -101,7 +89,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
 
             const buku = req.body
 
-           await db.run('update buku set isbn=?,judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.isbn,buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
+           await db.run('update buku setjudul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
 
             return res.status(200).json({
                 status : "succsess",

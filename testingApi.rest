@@ -18,7 +18,7 @@ GET http://127.0.0.1:3000/api/buku/terbaru
 ### terkenal
 GET http://127.0.0.1:3000/api/buku/terkenal
 ### detil
-GET http://127.0.0.1:3000/api/buku/9789794336052
+GET http://127.0.0.1:3000/api/buku/9786020422411
 
 ### hapus buku
 DELETE http://127.0.0.1:3000/api/buku/9789794336052
@@ -49,11 +49,14 @@ GET http://127.0.0.1:3000/api/buku/kategori
 
 
 ### pinjam buku
-GET http://127.0.0.1:3000/api/buku/pinjam/9789794336052
+GET http://127.0.0.1:3000/api/buku/pinjam/9786020422411
 ### buku sedang dipinjam
 GET http://127.0.0.1:3000/api/buku/dipinjam?start=0&limit=10
 ### riwayat peminjaman buku yang sudah selesai
 GET http://127.0.0.1:3000/api/buku/riwayat-peminjaman?start=0&limit=10
 
 ### selesaikan peminjaman buku
-GET http://127.0.0.1:3000/api/buku/pengembalian?nim=1121101710&isbn=9789794336052
+GET http://127.0.0.1:3000/api/buku/pengembalian?nim=1121101710&isbn=9786020422411
+
+###
+GET http://127.0.0.1:3000/api/buku/telat

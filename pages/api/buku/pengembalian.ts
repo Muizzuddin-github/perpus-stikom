@@ -53,7 +53,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
 
         await db.run('update buku set stok_tersedia=stok_tersedia + 1 where isbn=?',req.query.isbn)
-        await db.run('update peminjaman_buku set status_peminjaman=? where nim_mahasiswa=? and isbn=? and status_peminjaman=?',true,req.query.nim,req.query.isbn,false)
+        await db.run('update peminjaman_buku set status_peminjaman=? where nim_mahasiswa=? and isbn=? and status_peminjaman=?',false,req.query.nim,req.query.isbn,true)
 
         return res.status(200).json({
             status: "success",

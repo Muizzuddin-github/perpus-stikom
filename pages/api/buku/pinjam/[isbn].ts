@@ -55,7 +55,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
         const tanggal = date.toISOString().slice(0,10)
         const waktu = date.toISOString().slice(11,-5)
 
-        await db.run('insert into peminjaman_buku (nim_mahasiswa,isbn,tanggal_pengembalian,status_peminjaman) values (?,?,?,?)',['1121101710',checkBuku.isbn,`${tanggal} ${waktu}`,true])
+        await db.run('insert into peminjaman_buku (nim_mahasiswa,isbn,tanggal_pengembalian,status_peminjaman) values (?,?,?,?)',['1121101710',checkBuku.isbn,`${'2022-12-31 04:19:22'} ${waktu}`,true])
 
         checkBuku.stok_tersedia--
         return res.status(200).json({
