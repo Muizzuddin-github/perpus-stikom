@@ -13,7 +13,7 @@ const Book = (props: any) => {
     <main className={book.main}>
         <section className={book.gmbr}>
             <figure>
-                <Image src={props.detilBuku.gambar_buku} width={200} height={240} alt={props.detilBuku.judul_buku} priority />
+                <Image src={`/images/${props.detilBuku.gambar_buku}`} width={200} height={240} alt={props.detilBuku.judul_buku} priority />
                 <figcaption>{props.detilBuku.judul_buku}</figcaption>
             </figure>
         </section>
