@@ -77,7 +77,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
                     const selisih = +req.body.stok_buku - checkBuku[0].stok_buku
                     const stok_tersedia = selisih + checkBuku[0].stok_tersedia
 
-                    await db.run('update buku set isbn=?,judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.isbn,buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,stok_tersedia,+buku.id_kategori,req.query.isbn)
+                    await db.run('update buku set judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,stok_tersedia,+buku.id_kategori,req.query.isbn)
 
                     return res.status(200).json({
                         status : "succsess",
@@ -89,7 +89,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
 
             const buku = req.body
 
-           await db.run('update buku setjudul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
+           await db.run('update buku set judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
 
             return res.status(200).json({
                 status : "succsess",

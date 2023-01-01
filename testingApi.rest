@@ -18,7 +18,7 @@ GET http://127.0.0.1:3000/api/buku/terbaru
 ### terkenal
 GET http://127.0.0.1:3000/api/buku/terkenal
 ### detil
-GET http://127.0.0.1:3000/api/buku/9786020422411
+GET http://127.0.0.1:3000/api/buku/9789794336052
 
 ### hapus buku
 DELETE http://127.0.0.1:3000/api/buku/9789794336052
@@ -30,17 +30,14 @@ PUT  http://127.0.0.1:3000/api/buku/9789794336052
 Content-Type: application/json
 
 {
-    
-    "isbn": "9789794336052",
-    "judul_buku": "Bj Habibie2",
+    "judul_buku": "Bj Habibie23",
     "penerbit": "Mizan",
     "jumlah_halaman": 360,
     "deskripsi": "Buku ini merangkai jejak pemikiran B.J. Habibie selama menjabat sebagai Menteri Riset dan Teknologi sejak tahun 1978 hingga Maret 1998",
     "nomor_rak": 2,
     "pengarang": "Mizan",
-    "stok_buku": 12,
+    "stok_buku": 30,
     "id_kategori": 2
-    
 }
 
 
@@ -49,7 +46,7 @@ GET http://127.0.0.1:3000/api/buku/kategori
 
 
 ### pinjam buku
-GET http://127.0.0.1:3000/api/buku/pinjam/9786020422411
+GET http://127.0.0.1:3000/api/buku/pinjam/9789794336052
 ### buku sedang dipinjam
 GET http://127.0.0.1:3000/api/buku/dipinjam?start=0&limit=10
 ### riwayat peminjaman buku yang sudah selesai
