@@ -45,7 +45,16 @@ export default function Form(props: any){
 
         await (await fetch('/api/buku',{
             method : 'POST',
-            body : formData
+            body : JSON.stringify({
+                judul_buku : judul,
+                penerbit: penerbit,
+                pengarang: pengarang,
+                jumlah_halaman: jumlahHalaman,
+                nomor_rak: nomorRak,
+                stok_buku: stokBuku,
+                deskripsi: deskripsi,
+                id_kategori: kategoriID
+            })
         })).json()
 
         alert('berhasil menambahkan buku')

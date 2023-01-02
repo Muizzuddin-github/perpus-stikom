@@ -1,6 +1,13 @@
 import { NextApiRequest,NextApiResponse } from "next";
 import sqlite3Conn from "../../../model/sqlite3";
 import fs from 'fs'
+import { parseBodyRequest,moveUploadedFile } from "../../../utils/funcUpload";
+
+export const config = {
+    api : {
+      bodyParser : false
+    }
+}
 
 interface Detil {
     isbn: string
@@ -61,6 +68,44 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             return res.status(200).json({status : 'success',message: "buku berhasil dihapus",data: checkBuku})
         }else if(req.method === 'PUT'){
 
+
+            const form = await parseBodyRequest(req)
+            const strJSON = JSON.stringify(form)
+            const parse = JSON.parse(strJSON)
+            let gambar_buku = ''
+
+            if(parse.files.gambar_buku){
+                const mimetypeFile = parse.files.gambar_buku.mimetype.split('/')
+                if(mimetypeFile[0] !== 'image'){
+                    // hapus file
+                    fs.unlinkSync(parse.files.gambar_buku.filepath);
+                    return res.status(400).json({
+                        status: "bad request",
+                        message: "file diupload hanya boleh gambar",
+                        data: []
+                    })
+                }
+    
+    
+                // check ext file yang diizinkan
+                const ext = ['jpeg','jpg','png']
+    
+                if(!ext.includes(mimetypeFile[1])){
+                    fs.unlinkSync(parse.files.gambar_buku.filepath);
+                    return res.status(400).json({
+                        status: "bad request",
+                        message: "ext file hanya boleh png jpg dan jpeg",
+                        data: []
+                    })
+                }
+    
+                // ubah file biner yang diupload jadi file asli
+                gambar_buku = moveUploadedFile(parse.files.gambar_buku)
+                fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
+            }else{
+                gambar_buku = checkBuku[0].gambar_buku
+            }
+
             // ada yang pinjam buku ini ga
             if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
 
@@ -73,28 +118,23 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
                     })
                 }else{
                 
-                    const buku = req.body
+                    const buku = parse.fields
                     const selisih = +req.body.stok_buku - checkBuku[0].stok_buku
                     const stok_tersedia = selisih + checkBuku[0].stok_tersedia
 
-                    await db.run('update buku set judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,stok_tersedia,+buku.id_kategori,req.query.isbn)
+                    await db.run('update buku set judul_buku=?,gambar-buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,stok_tersedia,+buku.id_kategori,req.query.isbn)
 
-                    return res.status(200).json({
-                        status : "succsess",
-                        message: "berhasil mengubah data",
-                        data: [buku]
-                    })
                 }
             }
+           
+            const buku = parse.fields;
 
-            const buku = req.body
-
-           await db.run('update buku set judul_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
+           await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
 
             return res.status(200).json({
                 status : "succsess",
                 message: "berhasil mengubah data",
-                data: [buku]
+                data: []
             })
         }else{
             return res.status(405).json({status: "method not allowed",message: "hanya boleh method GET DELETE dan PUT saja",data: []})

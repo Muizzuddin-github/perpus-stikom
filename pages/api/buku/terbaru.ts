@@ -6,6 +6,7 @@ interface Buku {
     judul_buku: string,
     gambar_buku: string,
     pengarang: string
+    jumlah_halaman: number
 }
   
 type Data = {
