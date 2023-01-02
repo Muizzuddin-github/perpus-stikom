@@ -12,14 +12,16 @@ export const config = {
 interface Detil {
     isbn: string
     judul_buku: string
-    nomor_rak: number
     gambar_buku: string
-    deskripsi: string
+    penerbit: string
     jumlah_halaman: number
+    deskripsi: string
+    nomor_rak: number
     pengarang: string
     stok_buku: number
     stok_tersedia: number
-    penerbit: string
+    created_at: string
+    id_kategori: number
 }
 
 
@@ -72,6 +74,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             const form = await parseBodyRequest(req)
             const strJSON = JSON.stringify(form)
             const parse = JSON.parse(strJSON)
+            const buku = parse.fields
             let gambar_buku = ''
 
             if(parse.files.gambar_buku){
@@ -101,36 +104,48 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
     
                 // ubah file biner yang diupload jadi file asli
                 gambar_buku = moveUploadedFile(parse.files.gambar_buku)
-                fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
             }else{
                 gambar_buku = checkBuku[0].gambar_buku
             }
+            
 
             // ada yang pinjam buku ini ga
             if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
-
+                
                 // check stok buku baru tidak boleh < dari stok buku
                 if(parse.fields.stok_buku < checkBuku[0].stok_buku){
+                    fs.unlinkSync(`${process.cwd()}/public/images/${gambar_buku}`)
                     return res.status(400).json({
                         status: "bad request",
                         message: "stok yang anda ubah tidak boleh lebih kecil dari stok yang tersedia karena buku sudah ada yang meminjam",
                         data: []
                     })
                 }else{
-                
-                    const buku = parse.fields
-                    const selisih = +req.body.stok_buku - checkBuku[0].stok_buku
+
+                    const selisih = +buku.stok_buku - checkBuku[0].stok_buku
                     const stok_tersedia = selisih + checkBuku[0].stok_tersedia
 
-                    await db.run('update buku set judul_buku=?,gambar-buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,stok_tersedia,+buku.id_kategori,req.query.isbn)
+                    await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+stok_tersedia,+buku.id_kategori,req.query.isbn)
 
+                    if(parse.files.gambar_buku){
+                        fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
+                    }
+
+                    return res.status(200).json({
+                        status : "succsess",
+                        message: "berhasil mengubah data",
+                        data: []
+                    })
                 }
             }
-           
-            const buku = parse.fields;
+        
+            
+            await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
 
-           await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
-
+            if(parse.files.gambar_buku){
+                fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
+            }
+            
             return res.status(200).json({
                 status : "succsess",
                 message: "berhasil mengubah data",
