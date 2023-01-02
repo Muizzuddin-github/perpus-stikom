@@ -110,7 +110,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
 
                 // check stok buku baru tidak boleh < dari stok buku
-                if(req.body.stok_buku < checkBuku[0].stok_buku){
+                if(parse.fields.stok_buku < checkBuku[0].stok_buku){
                     return res.status(400).json({
                         status: "bad request",
                         message: "stok yang anda ubah tidak boleh lebih kecil dari stok yang tersedia karena buku sudah ada yang meminjam",
