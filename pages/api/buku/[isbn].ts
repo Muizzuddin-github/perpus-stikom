@@ -11,17 +11,16 @@ export const config = {
 
 interface Detil {
     isbn: string
-    judul_buku: string
-    gambar_buku: string
+    judul: string
+    gambar: string
     penerbit: string
     jumlah_halaman: number
     deskripsi: string
     nomor_rak: number
     pengarang: string
-    stok_buku: number
-    stok_tersedia: number
     created_at: string
     id_kategori: number
+    jumlah_stok: number
 }
 
 
@@ -36,7 +35,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
 
     try{
         const db = await sqlite3Conn()
-        const checkBuku = await db.all(`select * from buku where isbn = ${req.query.isbn}`)
+        const checkBuku = await db.all(`SELECT ds.isbn,ds.judul,ds.gambar,ds.penerbit,ds.jumlah_halaman,ds.deskripsi,buku.nomor_rak,ds.pengarang,buku.id_kategori, COUNT() as jumlah_stok ,COUNT() as jumlah_stok  FROM deskripsi_buku as ds LEFT JOIN buku ON ds.isbn=buku.isbn where ds.isbn = ${req.query.isbn} AND buku.status_peminjaman=false`)
         
         if(!checkBuku.length) return res.status(404).json({
             status: "not found",
@@ -57,17 +56,18 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             }
 
             // check apakah buku sedang dipinjam atau tidak
-            const checkDipinjam = await db.all(`select * from peminjaman_buku where isbn=${req.query.isbn} and status_peminjaman = true`)
+        const checkDipinjam = await db.all(`SELECT * FROM peminjaman_buku as pb INNER JOIN buku ON pb.kode_buku=buku.kode_buku WHERE buku.isbn=${req.query.isbn} and pb.status_peminjaman = true`)
             if(checkDipinjam.length){
                 return res.status(400).json({status: 'bad request',message: 'buku sedang dipinjam, tidak boleh dihapus', data: []})
             }
 
-            // hapus gambar
-            fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
+            
+            await db.run(`DELETE FROM deskripsi_buku WHERE isbn = ${req.query.isbn}`)
+            await db.run(`DELETE FROM buku WHERE isbn = ${req.query.isbn}`)
 
-            await db.run(`delete from buku where isbn = ${req.query.isbn}`)
-            await db.run(`delete from peminjaman_buku where isbn = ${req.query.isbn}`)
-            return res.status(200).json({status : 'success',message: "buku berhasil dihapus",data: checkBuku})
+            // hapus gambar
+            fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar}`)
+            return res.status(200).json({status : 'success',message: "buku berhasil dihapus",data: []})
         }else if(req.method === 'PUT'){
 
 
@@ -75,13 +75,13 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
             const strJSON = JSON.stringify(form)
             const parse = JSON.parse(strJSON)
             const buku = parse.fields
-            let gambar_buku = ''
+            let gambar: string = ''
 
-            if(parse.files.gambar_buku){
-                const mimetypeFile = parse.files.gambar_buku.mimetype.split('/')
+            if(parse.files.gambar){
+                const mimetypeFile = parse.files.gambar.mimetype.split('/')
                 if(mimetypeFile[0] !== 'image'){
                     // hapus file
-                    fs.unlinkSync(parse.files.gambar_buku.filepath);
+                    fs.unlinkSync(parse.files.gambar.filepath);
                     return res.status(400).json({
                         status: "bad request",
                         message: "file diupload hanya boleh gambar",
@@ -94,7 +94,7 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
                 const ext = ['jpeg','jpg','png']
     
                 if(!ext.includes(mimetypeFile[1])){
-                    fs.unlinkSync(parse.files.gambar_buku.filepath);
+                    fs.unlinkSync(parse.files.gambar.filepath);
                     return res.status(400).json({
                         status: "bad request",
                         message: "ext file hanya boleh png jpg dan jpeg",
@@ -103,47 +103,16 @@ export default async function(req:NextApiRequest, res:NextApiResponse<Data>){
                 }
     
                 // ubah file biner yang diupload jadi file asli
-                gambar_buku = moveUploadedFile(parse.files.gambar_buku)
+                gambar = moveUploadedFile(parse.files.gambar)
             }else{
-                gambar_buku = checkBuku[0].gambar_buku
+                gambar = checkBuku[0].gambar
             }
             
-
-            // ada yang pinjam buku ini ga
-            if(checkBuku[0].stok_buku > checkBuku[0].stok_tersedia){
-                
-                // check stok buku baru tidak boleh < dari stok buku
-                if(parse.fields.stok_buku < checkBuku[0].stok_buku){
-                    fs.unlinkSync(`${process.cwd()}/public/images/${gambar_buku}`)
-                    return res.status(400).json({
-                        status: "bad request",
-                        message: "stok yang anda ubah tidak boleh lebih kecil dari stok yang tersedia karena buku sudah ada yang meminjam",
-                        data: []
-                    })
-                }else{
-
-                    const selisih = +buku.stok_buku - checkBuku[0].stok_buku
-                    const stok_tersedia = selisih + checkBuku[0].stok_tersedia
-
-                    await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+stok_tersedia,+buku.id_kategori,req.query.isbn)
-
-                    if(parse.files.gambar_buku){
-                        fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
-                    }
-
-                    return res.status(200).json({
-                        status : "succsess",
-                        message: "berhasil mengubah data",
-                        data: []
-                    })
-                }
-            }
-        
             
-            await db.run('update buku set judul_buku=?,gambar_buku=?,penerbit=?,jumlah_halaman=?,deskripsi=?,nomor_rak=?,pengarang=?,stok_buku=?,stok_tersedia=?,id_kategori=? where isbn=?',buku.judul_buku,gambar_buku,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,+buku.nomor_rak,buku.pengarang,+buku.stok_buku,+buku.stok_buku,+buku.id_kategori,req.query.isbn)
+            await db.run('update deskripsi_buku set judul=?,gambar=?,penerbit=?,jumlah_halaman=?,deskripsi=?,pengarang=? where isbn=?',buku.judul_buku,gambar,buku.penerbit,+buku.jumlah_halaman,buku.deskripsi,buku.pengarang,req.query.isbn)
 
-            if(parse.files.gambar_buku){
-                fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar_buku}`)
+            if(parse.files.gambar){
+                fs.unlinkSync(`${process.cwd()}/public/images/${checkBuku[0].gambar}`)
             }
             
             return res.status(200).json({

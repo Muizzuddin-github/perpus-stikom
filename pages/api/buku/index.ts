@@ -12,8 +12,9 @@ export const config = {
 
 interface Buku {
     isbn: string
-    judul_buku: string
-    gambar_buku: string
+    judul: string
+    gambar: string
+    jumlah_halaman: number
     pengarang: string
 }
   
@@ -30,8 +31,22 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
         if(req.method === 'GET'){
             const start = req.query.start || 0
             const limit = req.query.limit || 0
-    
-            const books = await db.all(`select isbn,judul_buku,gambar_buku,pengarang,jumlah_halaman from buku limit ${+limit} offset ${+start}`)
+            const kategori = req.query.kategori || ''
+            const judul = req.query.judul || ''
+
+            let books: Array<Buku> = []
+
+            if(kategori){
+                if(judul){
+                    books = await db.all(`SELECT db.isbn,db.judul,db.gambar,db.jumlah_halaman,db.pengarang FROM deskripsi_buku AS db INNER JOIN buku AS b ON db.isbn=b.isbn INNER JOIN kategori AS k ON b.id_kategori=k.id_kategori WHERE k.nama=? AND db.judul LIKE ? GROUP BY db.isbn LIMIT ? OFFSET ?`,kategori,`%${judul}%`,+limit,+start)
+                }else{
+                    books = await db.all(`SELECT db.isbn,db.judul,db.gambar,db.jumlah_halaman,db.pengarang FROM deskripsi_buku AS db INNER JOIN buku AS b ON db.isbn=b.isbn INNER JOIN kategori AS k ON b.id_kategori=k.id_kategori WHERE k.nama=? GROUP BY db.isbn LIMIT ? OFFSET ?`,kategori,+limit,+start)
+                }
+            }else if(judul){
+                books = await db.all(`SELECT db.isbn,db.judul,db.gambar,db.jumlah_halaman,db.pengarang FROM deskripsi_buku AS db INNER JOIN buku AS b ON db.isbn=b.isbn INNER JOIN kategori AS k ON b.id_kategori=k.id_kategori WHERE db.judul LIKE ? GROUP BY db.isbn LIMIT ? OFFSET ?`,`%${judul}%`,+limit,+start)
+            }else{
+                books = await db.all(`SELECT db.isbn,db.judul,db.gambar,db.jumlah_halaman,db.pengarang FROM deskripsi_buku AS db INNER JOIN buku AS b ON db.isbn=b.isbn INNER JOIN kategori AS k ON b.id_kategori=k.id_kategori GROUP BY db.isbn LIMIT ? OFFSET ?`,+limit,+start)
+            }
     
             return res.status(200).json({
                 status: "success",
@@ -50,11 +65,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             const strJSON = JSON.stringify(form)
             const parse = JSON.parse(strJSON)
 
-            const checkBuku = await db.all(`select * from buku where isbn = ${parse.fields.isbn}`)
+            const checkBuku = await db.all(`SELECT * FROM deskripsi_buku where isbn = ${parse.fields.isbn}`)
 
             if(checkBuku.length){
                 // hapus file
-                fs.unlinkSync(parse.files.gambar_buku.filepath);
+                fs.unlinkSync(parse.files.gambar.filepath);
                 return res.status(400).json({
                     status: 'bad request',
                     message: 'isbn sudah ada',
@@ -65,10 +80,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             // limit file 10mb
             const limiSize:number = 10 * 1024 * 1024
 
-            if(parse.files.gambar_buku.size > limiSize){
+            if(parse.files.gambar.size > limiSize){
 
                 // hapus file
-                fs.unlinkSync(parse.files.gambar_buku.filepath);
+                fs.unlinkSync(parse.files.gambar.filepath);
                 return res.status(400).json({
                     status: "bad request",
                     message: "file yang anda upload terlalu besar max 10",
@@ -78,11 +93,11 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
             // check file
 
-            const mimetypeFile = parse.files.gambar_buku.mimetype.split('/')
+            const mimetypeFile = parse.files.gambar.mimetype.split('/')
 
             if(mimetypeFile[0] !== 'image'){
                 // hapus file
-                fs.unlinkSync(parse.files.gambar_buku.filepath);
+                fs.unlinkSync(parse.files.gambar.filepath);
                 return res.status(400).json({
                     status: "bad request",
                     message: "file diupload hanya boleh gambar",
@@ -95,7 +110,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             const ext = ['jpeg','jpg','png']
 
             if(!ext.includes(mimetypeFile[1])){
-                fs.unlinkSync(parse.files.gambar_buku.filepath);
+                fs.unlinkSync(parse.files.gambar.filepath);
                 return res.status(400).json({
                     status: "bad request",
                     message: "ext file hanya boleh png jpg dan jpeg",
@@ -104,13 +119,13 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
             }
 
             // ubah file biner yang diupload jadi file asli
-            const gambar_buku = moveUploadedFile(parse.files.gambar_buku)
+            const gambar = moveUploadedFile(parse.files.gambar)
             const fields = parse.fields
 
 
-            await db.run(`insert into buku (isbn,judul_buku,gambar_buku,penerbit,jumlah_halaman,deskripsi,nomor_rak,pengarang,stok_buku,stok_tersedia,id_kategori) values (?,?,?,?,?,?,?,?,?,?,?)`,[fields.isbn,fields.judul_buku,gambar_buku,fields.penerbit,+fields.jumlah_halaman,fields.deskripsi,+fields.nomor_rak,fields.pengarang,+fields.stok_buku,+fields.stok_buku,+fields.id_kategori])
+            await db.run(`INSERT INTO deskripsi_buku (isbn,judul,gambar,penerbit,jumlah_halaman,deskripsi,pengarang) VALUES (?,?,?,?,?,?,?)`,[fields.isbn,fields.judul,gambar,fields.penerbit,+fields.jumlah_halaman,fields.deskripsi,fields.pengarang])
 
-            return res.status(201).json({status : 'created',message: "buku berhasil ditambah",data: [fields]})
+            return res.status(201).json({status : 'created',message: "buku berhasil ditambah",data: []})
         }else{
             return res.status(405).json({status: "method not allowed",message: "hanya boleh method GET dan POST saja",data: []})
         }

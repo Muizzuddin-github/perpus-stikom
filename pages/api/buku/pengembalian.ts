@@ -21,44 +21,35 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
 
         const db = await sqlite3Conn()
 
-        const checkMahasiswa = await db.get('select * from mahasiswa where nim_mahasiswa=?',req.query.nim)
+        const checkMahasiswa = await db.get('SELECT * FROM peminjaman_buku WHERE nim=? AND status_peminjaman=?',req.query.nim,true)
 
         if(!checkMahasiswa){
             return res.status(404).json({
                 status: 'not found',
-                message: 'nim mahasiswa tidak ditemukan',
+                message: 'mahasiswa tidak sedang meminjam buku',
                 data: []
             })
         }
 
-        const checkBuku = await db.get('select * from buku where isbn=?',req.query.isbn)
+        const checkBuku = await db.get('SELECT * FROM peminjaman_buku WHERE nim = ? AND kode_buku=? AND status_peminjaman=?',req.query.nim,req.query.kode,true)
 
         if(!checkBuku){
             return res.status(404).json({
                 status: 'not found',
-                message: 'isbn buku tidak ditemukan',
+                message: 'kode buku tidak ditemukan',
                 data: []
             })
         }
 
-        if(checkBuku.stok_tersedia >= checkBuku.stok_buku){
-            return res.status(400).json({
-                status: "bad request",
-                message: "buku yang dikembalikan sudah sesuai dengan stok buku",
-                data: []
+        await db.run('UPDATE buku SET status_peminjaman=? WHERE kode_buku=?',false,req.query.kode)
 
-            })
-        }
-        
+        await db.run('UPDATE peminjaman_buku SET status_peminjaman = false WHERE status_peminjaman = true AND kode_buku = 9789794336052001 AND nim = 1121101710')
 
-
-        await db.run('update buku set stok_tersedia=stok_tersedia + 1 where isbn=?',req.query.isbn)
-        await db.run('update peminjaman_buku set status_peminjaman=? where nim_mahasiswa=? and isbn=? and status_peminjaman=?',false,req.query.nim,req.query.isbn,true)
 
         return res.status(200).json({
             status: "success",
             message: "peminjaman buku telah selesai",
-            data: []
+            data: [checkBuku]
         })
 
     }catch(err: any){

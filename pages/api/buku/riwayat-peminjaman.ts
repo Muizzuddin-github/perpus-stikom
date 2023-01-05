@@ -21,12 +21,12 @@ export default async (req: NextApiRequest,res:NextApiResponse<Data>) => {
         const start = req.query.start || 0
         const limit = req.query.limit || 0
 
-        const dipinjam = await db.all(`select pb.id_peminjaman, d.isbn,d.judul_buku,d.gambar_buku,d.penerbit,d.jumlah_halaman,d.deskripsi,d.pengarang,pb.tanggal_peminjaman,pb.tanggal_pengembalian from peminjaman_buku as pb join buku as d on pb.isbn=d.isbn where pb.status_peminjaman = false limit ${+limit} offset ${+start}`)
+        const riwayat = await db.all(`SELECT pb.kode_buku,pb.nim,pb.tanggal_peminjaman,pb.tanggal_pengembalian FROM peminjaman_buku AS pb INNER JOIN buku AS b on b.kode_buku=pb.kode_buku WHERE pb.status_peminjaman = false LIMIT ${limit} OFFSET ${start}`)
 
         return res.status(200).json({
             status: "success",
             message: "data buku yang sedang dipinjam",
-            data: dipinjam
+            data: riwayat
         })
 
     }catch(err: any){

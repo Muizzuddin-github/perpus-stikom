@@ -2,10 +2,8 @@ import { NextApiRequest,NextApiResponse } from "next";
 import sqlite3Conn from "../../../model/sqlite3";
 
 interface BukuDipinjam {
-    id_peminjaman: number
-    isbn: string
-    judul_buku: string
-    gambar_buku: string
+    kode_buku: string
+    nim: string
     tanggal_peminjaman: string
     tanggal_pengembalian: string
 }
@@ -13,7 +11,7 @@ interface BukuDipinjam {
 type Data = {
     status : string,
     message: string
-    data: Array<any>
+    data: Array<BukuDipinjam>
 }
 
 export default async (req: NextApiRequest,res:NextApiResponse<Data>) => {
@@ -29,7 +27,7 @@ export default async (req: NextApiRequest,res:NextApiResponse<Data>) => {
         const start = req.query.start || 0
         const limit = req.query.limit || 0
 
-        const dipinjam = await db.all(`select pb.id_peminjaman, d.isbn,d.judul_buku,d.gambar_buku,pb.tanggal_peminjaman,pb.tanggal_pengembalian from peminjaman_buku as pb join buku as d on pb.isbn=d.isbn where pb.status_peminjaman = true limit ${+limit} offset ${+start}`)
+        const dipinjam = await db.all(`SELECT pb.kode_buku,pb.nim,pb.tanggal_peminjaman,pb.tanggal_pengembalian FROM peminjaman_buku AS pb INNER JOIN buku AS b on b.kode_buku=pb.kode_buku WHERE pb.status_peminjaman = true LIMIT ${limit} OFFSET ${start}`)
 
         return res.status(200).json({
             status: "success",
